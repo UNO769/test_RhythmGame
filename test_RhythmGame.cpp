@@ -11,6 +11,12 @@ HINSTANCE hInst;                                // 現在のインターフェ�
 WCHAR szTitle[MAX_LOADSTRING];                  // タイトル バーのテキスト
 WCHAR szWindowClass[MAX_LOADSTRING];            // メイン ウィンドウ クラス名
 
+bool drawCircleA = false;
+bool drawCircleB = false;
+bool drawCircleC = false;
+bool drawCircleD = false;
+
+
 // このコード モジュールに含まれる関数の宣言を転送します:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
@@ -142,14 +148,175 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         break;
+
     case WM_PAINT:
+    {
+        PAINTSTRUCT ps;
+        HDC hdc = BeginPaint(hWnd, &ps);
+
+
+        RECT rect;
+        GetClientRect(hWnd, &rect);
+        int width = rect.right - rect.left;
+        int height = rect.bottom - rect.top;
+
+        HPEN blackPen = CreatePen(PS_SOLID, 2, RGB(0, 0, 0)); // 太さ2pxの黒色の線
+        HPEN oldPen = (HPEN)SelectObject(hdc, blackPen);
+
+        // 画面を3分割するためのX座標
+        int x1 = 5 * width / 18;
+        int x2 = 7 * width / 18;
+        int x3 = 9 * width / 18;
+        int x4 = 11 * width / 18;
+        int x5 = 13 * width / 18;
+
+        MoveToEx(hdc, x1, 0, NULL);
+        LineTo(hdc, x1, height);
+
+        MoveToEx(hdc, x2, 0, NULL);
+        LineTo(hdc, x2, height);
+
+        MoveToEx(hdc, x3, 0, NULL);
+        LineTo(hdc, x3, height);
+
+        MoveToEx(hdc, x4, 0, NULL);
+        LineTo(hdc, x4, height);
+
+        MoveToEx(hdc, x5, 0, NULL);
+        LineTo(hdc, x5, height);
+
+        SelectObject(hdc, oldPen);
+        DeleteObject(blackPen);
+
+
+        if (drawCircleA) // フラグが true の場合のみ円を描画
         {
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hWnd, &ps);
-            // TODO: HDC を使用する描画コードをここに追加してください...
-            EndPaint(hWnd, &ps);
+            RECT rect;
+            GetClientRect(hWnd, &rect);
+            int width = rect.right - rect.left;
+            int height = rect.bottom - rect.top;
+
+            int radius = 50;
+            int centerX = 3 * width / 9;
+            int centerY = 7 * height / 8;
+
+            HBRUSH redBrush = CreateSolidBrush(RGB(255, 0, 0));
+            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, redBrush);
+
+            Ellipse(hdc, centerX - radius, centerY - radius, centerX + radius, centerY + radius);
+
+            SelectObject(hdc, oldBrush);
+            DeleteObject(redBrush);
+        }
+        if (drawCircleB) // フラグが true の場合のみ円を描画
+        {
+            RECT rect;
+            GetClientRect(hWnd, &rect);
+            int width = rect.right - rect.left;
+            int height = rect.bottom - rect.top;
+
+            int radius = 50;
+            int centerX = 4 * width / 9;
+            int centerY = 7 * height / 8;
+
+            HBRUSH greenBrush = CreateSolidBrush(RGB(0, 255, 0));
+            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, greenBrush);
+
+            Ellipse(hdc, centerX - radius, centerY - radius, centerX + radius, centerY + radius);
+
+            SelectObject(hdc, oldBrush);
+            DeleteObject(greenBrush);
+        }
+        if (drawCircleC) // フラグが true の場合のみ円を描画
+        {
+            RECT rect;
+            GetClientRect(hWnd, &rect);
+            int width = rect.right - rect.left;
+            int height = rect.bottom - rect.top;
+
+            int radius = 50;
+            int centerX = 5 * width / 9;
+            int centerY = 7 * height / 8;
+
+            HBRUSH blueBrush = CreateSolidBrush(RGB(0, 0, 255));
+            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, blueBrush);
+
+            Ellipse(hdc, centerX - radius, centerY - radius, centerX + radius, centerY + radius);
+
+            SelectObject(hdc, oldBrush);
+            DeleteObject(blueBrush);
+        }
+        if (drawCircleD) // フラグが true の場合のみ円を描画
+        {
+            RECT rect;
+            GetClientRect(hWnd, &rect);
+            int width = rect.right - rect.left;
+            int height = rect.bottom - rect.top;
+
+            int radius = 50;
+            int centerX = 6 * width / 9;
+            int centerY = 7 * height / 8;
+
+            HBRUSH yellowBrush = CreateSolidBrush(RGB(255, 255, 0));
+            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, yellowBrush);
+
+            Ellipse(hdc, centerX - radius, centerY - radius, centerX + radius, centerY + radius);
+
+            SelectObject(hdc, oldBrush);
+            DeleteObject(yellowBrush);
+        }
+
+        EndPaint(hWnd, &ps);
+    }
+    break;
+    case WM_KEYDOWN:
+        switch (wParam)
+        {
+        case 'D':
+            drawCircleA = true; // Dキーを押したらA描画フラグをON
+            InvalidateRect(hWnd, NULL, TRUE); // 再描画をリクエスト
+            break;
+        case 'F':
+            drawCircleB = true; // Fキーを押したらB描画フラグをON
+            InvalidateRect(hWnd, NULL, TRUE); // 再描画をリクエスト
+            break;
+        case 'J':
+            drawCircleC = true; // Jキーを押したらC描画フラグをON
+            InvalidateRect(hWnd, NULL, TRUE); // 再描画をリクエスト
+            break;
+        case 'K':
+            drawCircleD = true; // Kキーを押したらD描画フラグをON
+            InvalidateRect(hWnd, NULL, TRUE); // 再描画をリクエスト
+            break;
+
         }
         break;
+
+
+
+    case WM_KEYUP:
+        switch (wParam)
+        {
+		case 'D':
+            drawCircleA = false; // Dキーを離したら円を消す
+            InvalidateRect(hWnd, NULL, TRUE); // 再描画
+			break;
+        case 'F':
+            drawCircleB = false; // Fキーを離したら円を消す
+            InvalidateRect(hWnd, NULL, TRUE); // 再描画
+            break;
+        case 'J':
+            drawCircleC = false; // Jキーを離したら円を消す
+            InvalidateRect(hWnd, NULL, TRUE); // 再描画
+            break;
+        case 'K':
+            drawCircleD = false; // Kキーを離したら円を消す
+            InvalidateRect(hWnd, NULL, TRUE); // 再描画
+            break;
+
+        }
+        break;
+
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
