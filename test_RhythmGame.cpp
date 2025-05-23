@@ -188,79 +188,65 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         SelectObject(hdc, oldPen);
         DeleteObject(blackPen);
 
-
         if (drawCircleA) // フラグが true の場合のみ円を描画
         {
-            RECT rect;
-            GetClientRect(hWnd, &rect);
-            int width = rect.right - rect.left;
-            int height = rect.bottom - rect.top;
+            int left = 5 * width / 18;
+            int top = 18 * height / 20;
+            int right = 7 * width / 18;
+            int bottom = 19 * height / 20;
 
-            int radius = 50;
-            int centerX = 3 * width / 9;
-            int centerY = 7 * height / 8;
-
-            HBRUSH redBrush = CreateSolidBrush(RGB(255, 0, 0));
+            HBRUSH redBrush = CreateSolidBrush(RGB(255, 0, 0)); 
             HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, redBrush);
 
-            Ellipse(hdc, centerX - radius, centerY - radius, centerX + radius, centerY + radius);
+            Rectangle(hdc, left, top, right, bottom); // 長方形を描画
 
             SelectObject(hdc, oldBrush);
             DeleteObject(redBrush);
         }
         if (drawCircleB) // フラグが true の場合のみ円を描画
         {
-            RECT rect;
-            GetClientRect(hWnd, &rect);
-            int width = rect.right - rect.left;
-            int height = rect.bottom - rect.top;
 
-            int radius = 50;
-            int centerX = 4 * width / 9;
-            int centerY = 7 * height / 8;
+            int left = 7 * width / 18;
+            int top = 18 * height / 20;
+            int right = 9 * width / 18;
+            int bottom = 19 * height / 20;
 
             HBRUSH greenBrush = CreateSolidBrush(RGB(0, 255, 0));
             HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, greenBrush);
 
-            Ellipse(hdc, centerX - radius, centerY - radius, centerX + radius, centerY + radius);
+            Rectangle(hdc, left, top, right, bottom); // 長方形を描画
 
             SelectObject(hdc, oldBrush);
             DeleteObject(greenBrush);
         }
         if (drawCircleC) // フラグが true の場合のみ円を描画
         {
-            RECT rect;
-            GetClientRect(hWnd, &rect);
-            int width = rect.right - rect.left;
-            int height = rect.bottom - rect.top;
 
-            int radius = 50;
-            int centerX = 5 * width / 9;
-            int centerY = 7 * height / 8;
+            int left = 9 * width / 18;
+            int top = 18 * height / 20;
+            int right = 11 * width / 18;
+            int bottom = 19 * height / 20;
 
             HBRUSH blueBrush = CreateSolidBrush(RGB(0, 0, 255));
             HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, blueBrush);
 
-            Ellipse(hdc, centerX - radius, centerY - radius, centerX + radius, centerY + radius);
+            Rectangle(hdc, left, top, right, bottom); // 長方形を描画
 
             SelectObject(hdc, oldBrush);
             DeleteObject(blueBrush);
         }
         if (drawCircleD) // フラグが true の場合のみ円を描画
         {
-            RECT rect;
-            GetClientRect(hWnd, &rect);
-            int width = rect.right - rect.left;
-            int height = rect.bottom - rect.top;
 
-            int radius = 50;
-            int centerX = 6 * width / 9;
-            int centerY = 7 * height / 8;
+            int left = 11 * width / 18;
+            int top = 18 * height / 20;
+            int right = 13 * width / 18;
+            int bottom = 19 * height / 20;
 
             HBRUSH yellowBrush = CreateSolidBrush(RGB(255, 255, 0));
             HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, yellowBrush);
 
-            Ellipse(hdc, centerX - radius, centerY - radius, centerX + radius, centerY + radius);
+            Rectangle(hdc, left, top, right, bottom); // 長方形を描画
 
             SelectObject(hdc, oldBrush);
             DeleteObject(yellowBrush);
