@@ -11,10 +11,10 @@ HINSTANCE hInst;                                // 現在のインターフェ�
 WCHAR szTitle[MAX_LOADSTRING];                  // タイトル バーのテキスト
 WCHAR szWindowClass[MAX_LOADSTRING];            // メイン ウィンドウ クラス名
 
-bool drawCircleA = false;
-bool drawCircleB = false;
-bool drawCircleC = false;
-bool drawCircleD = false;
+bool drawBoxA = false;
+bool drawBoxB = false;
+bool drawBoxC = false;
+bool drawBoxD = false;
 
 
 // このコード モジュールに含まれる関数の宣言を転送します:
@@ -129,6 +129,11 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+    RECT rect;
+    GetClientRect(hWnd, &rect);
+    int width = rect.right - rect.left;
+    int height = rect.bottom - rect.top;
+
     switch (message)
     {
     case WM_COMMAND:
@@ -153,12 +158,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hWnd, &ps);
-
-
-        RECT rect;
-        GetClientRect(hWnd, &rect);
-        int width = rect.right - rect.left;
-        int height = rect.bottom - rect.top;
 
         HPEN blackPen = CreatePen(PS_SOLID, 2, RGB(0, 0, 0)); // 太さ2pxの黒色の線
         HPEN oldPen = (HPEN)SelectObject(hdc, blackPen);
@@ -188,7 +187,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         SelectObject(hdc, oldPen);
         DeleteObject(blackPen);
 
-        if (drawCircleA) // フラグが true の場合のみ円を描画
+        if (drawBoxA)
         {
             int left = 5 * width / 18;
             int top = 18 * height / 20;
@@ -203,9 +202,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             SelectObject(hdc, oldBrush);
             DeleteObject(redBrush);
         }
-        if (drawCircleB) // フラグが true の場合のみ円を描画
+        if (drawBoxB) 
         {
-
             int left = 7 * width / 18;
             int top = 18 * height / 20;
             int right = 9 * width / 18;
@@ -219,7 +217,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             SelectObject(hdc, oldBrush);
             DeleteObject(greenBrush);
         }
-        if (drawCircleC) // フラグが true の場合のみ円を描画
+        if (drawBoxC)
         {
 
             int left = 9 * width / 18;
@@ -235,7 +233,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             SelectObject(hdc, oldBrush);
             DeleteObject(blueBrush);
         }
-        if (drawCircleD) // フラグが true の場合のみ円を描画
+        if (drawBoxD) 
         {
 
             int left = 11 * width / 18;
@@ -256,23 +254,53 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     }
     break;
     case WM_KEYDOWN:
+
         switch (wParam)
         {
         case 'D':
-            drawCircleA = true; // Dキーを押したらA描画フラグをON
-            InvalidateRect(hWnd, NULL, TRUE); // 再描画をリクエスト
+            drawBoxA = true; // Dキーを押したらA描画フラグをON
+            RECT rectA;
+
+            rectA.left = 5 * width / 18;
+            rectA.top = 18 * height / 20;
+            rectA.right = 7 * width / 18;
+            rectA.bottom = 19 * height / 20;
+
+            InvalidateRect(hWnd, &rectA, TRUE); // 長方形の範囲のみ再描画
+
             break;
         case 'F':
-            drawCircleB = true; // Fキーを押したらB描画フラグをON
-            InvalidateRect(hWnd, NULL, TRUE); // 再描画をリクエスト
+            drawBoxB = true; // Fキーを押したらB描画フラグをON
+            RECT rectB;
+
+            rectB.left = 7 * width / 18;
+            rectB.top = 18 * height / 20;
+            rectB.right = 9 * width / 18;
+            rectB.bottom = 19 * height / 20;
+
+            InvalidateRect(hWnd, &rectB, TRUE); // 長方形の範囲のみ再描画
             break;
         case 'J':
-            drawCircleC = true; // Jキーを押したらC描画フラグをON
-            InvalidateRect(hWnd, NULL, TRUE); // 再描画をリクエスト
+            drawBoxC = true; // Jキーを押したらC描画フラグをON
+			RECT rectC;
+
+            rectC.left = 9 * width / 18;
+            rectC.top = 18 * height / 20;
+            rectC.right = 11 * width / 18;
+            rectC.bottom = 19 * height / 20;
+
+            InvalidateRect(hWnd, &rectC, TRUE); // 長方形の範囲のみ再描画
             break;
         case 'K':
-            drawCircleD = true; // Kキーを押したらD描画フラグをON
-            InvalidateRect(hWnd, NULL, TRUE); // 再描画をリクエスト
+            drawBoxD = true; // Kキーを押したらD描画フラグをON
+			RECT rectD;
+
+            rectD.left = 11 * width / 18;
+            rectD.top = 18 * height / 20;
+            rectD.right = 13 * width / 18;
+            rectD.bottom = 19 * height / 20;
+
+            InvalidateRect(hWnd, &rectD, TRUE); // 長方形の範囲のみ再描画
             break;
 
         }
@@ -281,23 +309,53 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
     case WM_KEYUP:
+
+
         switch (wParam)
         {
 		case 'D':
-            drawCircleA = false; // Dキーを離したら円を消す
-            InvalidateRect(hWnd, NULL, TRUE); // 再描画
+            drawBoxA = false; // Dキーを離したら四角を消す
+			RECT rectA;
+
+            rectA.left = 5 * width / 18;
+            rectA.top = 18 * height / 20;
+            rectA.right = 7 * width / 18;
+            rectA.bottom = 19 * height / 20;
+
+            InvalidateRect(hWnd, &rectA, TRUE); // 長方形の範囲のみ再描画
 			break;
         case 'F':
-            drawCircleB = false; // Fキーを離したら円を消す
-            InvalidateRect(hWnd, NULL, TRUE); // 再描画
+            drawBoxB = false; // Fキーを離したら四角を消す
+            RECT rectB;
+
+            rectB.left = 7 * width / 18;
+            rectB.top = 18 * height / 20;
+            rectB.right = 9 * width / 18;
+            rectB.bottom = 19 * height / 20;
+
+            InvalidateRect(hWnd, &rectB, TRUE); // 長方形の範囲のみ再描画
             break;
         case 'J':
-            drawCircleC = false; // Jキーを離したら円を消す
-            InvalidateRect(hWnd, NULL, TRUE); // 再描画
+            drawBoxC = false; // Jキーを離したら四角を消す
+            RECT rectC;
+
+            rectC.left = 9 * width / 18;
+            rectC.top = 18 * height / 20;
+            rectC.right = 11 * width / 18;
+            rectC.bottom = 19 * height / 20;
+
+            InvalidateRect(hWnd, &rectC, TRUE); // 長方形の範囲のみ再描画
             break;
         case 'K':
-            drawCircleD = false; // Kキーを離したら円を消す
-            InvalidateRect(hWnd, NULL, TRUE); // 再描画
+            drawBoxD = false; // Kキーを離したら四角を消す
+            RECT rectD;
+
+            rectD.left = 11 * width / 18;
+            rectD.top = 18 * height / 20;
+            rectD.right = 13 * width / 18;
+            rectD.bottom = 19 * height / 20;
+
+            InvalidateRect(hWnd, &rectD, TRUE); // 長方形の範囲のみ再描画
             break;
 
         }
