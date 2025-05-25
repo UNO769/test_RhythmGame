@@ -120,7 +120,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
       CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
 
-   SetTimer(hWnd, 1, 16, NULL); // 16msごとに更新（約60FPS）
+
 
    if (!hWnd)
    {
@@ -159,6 +159,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     case WM_CREATE:
     {
+        SetTimer(hWnd, 1, 16, NULL); // 16msごとに更新（約60FPS）
         // 初回のノーツデータ読み込み
         std::ifstream file("notes_data.txt");
 
@@ -176,6 +177,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     else if (x == 2) laneX = 7 * width / 18;
                     else if (x == 3) laneX = 9 * width / 18;
                     else if (x == 4) laneX = 11 * width / 18;
+                    y = y * -1;
 
                     notes.push_back(Note{ laneX, y, speed, key });
                 }
@@ -197,11 +199,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             std::cout << "ノーツ位置: " << note.y << std::endl; // 確認用
         }
 
-        InvalidateRect(hWnd, NULL, TRUE); // 再描画
+        RECT rectN;
+
+        rectN.left = 5 * width / 18;
+        rectN.top = 0;
+        rectN.right = 13 * width / 18;
+        rectN.bottom = height;
+
+        InvalidateRect(hWnd, &rectN, FALSE); 
     }
 
     break;
 
+    case WM_ERASEBKGND:
+        return 1; // 背景クリアしない → flicker防止
 
     case WM_COMMAND:
         {
@@ -226,8 +237,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hWnd, &ps);
 
-        HPEN blackPen = CreatePen(PS_SOLID, 2, RGB(0, 0, 0)); // 太さ2pxの黒色の線
-        HPEN oldPen = (HPEN)SelectObject(hdc, blackPen);
+        // --- ダブルバッファ用 HDC と Bitmap を作成 ---
+        RECT clientRect;
+        GetClientRect(hWnd, &clientRect);
+        int width = clientRect.right - clientRect.left;
+        int height = clientRect.bottom - clientRect.top;
+
+        HDC memDC = CreateCompatibleDC(hdc);
+        HBITMAP backBuffer = CreateCompatibleBitmap(hdc, width, height);
+        HBITMAP oldBitmap = (HBITMAP)SelectObject(memDC, backBuffer);
+
+        // 背景塗りつぶし
+        HBRUSH bgBrush = CreateSolidBrush(RGB(255, 255, 255));
+        FillRect(memDC, &clientRect, bgBrush);
+        DeleteObject(bgBrush);
+
+        // --- 線を描画 ---
+        HPEN blackPen = CreatePen(PS_SOLID, 2, RGB(0, 0, 0));
+        HPEN oldPen = (HPEN)SelectObject(memDC, blackPen);
 
         int x1 = 5 * width / 18;
         int x2 = 7 * width / 18;
@@ -235,100 +262,60 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         int x4 = 11 * width / 18;
         int x5 = 13 * width / 18;
 
-        MoveToEx(hdc, x1, 0, NULL);
-        LineTo(hdc, x1, height);
+        MoveToEx(memDC, x1, 0, NULL); LineTo(memDC, x1, height);
+        MoveToEx(memDC, x2, 0, NULL); LineTo(memDC, x2, height);
+        MoveToEx(memDC, x3, 0, NULL); LineTo(memDC, x3, height);
+        MoveToEx(memDC, x4, 0, NULL); LineTo(memDC, x4, height);
+        MoveToEx(memDC, x5, 0, NULL); LineTo(memDC, x5, height);
 
-        MoveToEx(hdc, x2, 0, NULL);
-        LineTo(hdc, x2, height);
-
-        MoveToEx(hdc, x3, 0, NULL);
-        LineTo(hdc, x3, height);
-
-        MoveToEx(hdc, x4, 0, NULL);
-        LineTo(hdc, x4, height);
-
-        MoveToEx(hdc, x5, 0, NULL);
-        LineTo(hdc, x5, height);
-
-        SelectObject(hdc, oldPen);
+        SelectObject(memDC, oldPen);
         DeleteObject(blackPen);
 
-
+        // --- ノーツを描画 ---
         for (const auto& note : notes) {
             RECT noteRect = { note.x, note.y, note.x + width / 9, note.y + height / 20 };
             HBRUSH brush = CreateSolidBrush(RGB(50, 50, 50));
-            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, brush);
+            HBRUSH oldBrush = (HBRUSH)SelectObject(memDC, brush);
 
-            Rectangle(hdc, noteRect.left, noteRect.top, noteRect.right, noteRect.bottom);
+            Rectangle(memDC, noteRect.left, noteRect.top, noteRect.right, noteRect.bottom);
 
-            SelectObject(hdc, oldBrush);
+            SelectObject(memDC, oldBrush);
             DeleteObject(brush);
         }
 
-        if (drawBoxA)
-        {
-            int left = 5 * width / 18;
+        // --- 各ボックスを描画 ---
+        auto drawColoredBox = [&](bool condition, COLORREF color, int leftMul, int rightMul) {
+            if (!condition) return;
+            int left = leftMul * width / 18;
+            int right = rightMul * width / 18;
             int top = 18 * height / 20;
-            int right = 7 * width / 18;
             int bottom = 19 * height / 20;
 
-            HBRUSH redBrush = CreateSolidBrush(RGB(255, 0, 0)); 
-            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, redBrush);
+            HBRUSH brush = CreateSolidBrush(color);
+            HBRUSH oldBrush = (HBRUSH)SelectObject(memDC, brush);
 
-            Rectangle(hdc, left, top, right, bottom); // 長方形を描画
+            Rectangle(memDC, left, top, right, bottom);
 
-            SelectObject(hdc, oldBrush);
-            DeleteObject(redBrush);
-        }
-        if (drawBoxB) 
-        {
-            int left = 7 * width / 18;
-            int top = 18 * height / 20;
-            int right = 9 * width / 18;
-            int bottom = 19 * height / 20;
+            SelectObject(memDC, oldBrush);
+            DeleteObject(brush);
+            };
 
-            HBRUSH greenBrush = CreateSolidBrush(RGB(0, 255, 0));
-            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, greenBrush);
+        drawColoredBox(drawBoxA, RGB(255, 0, 0), 5, 7);
+        drawColoredBox(drawBoxB, RGB(0, 255, 0), 7, 9);
+        drawColoredBox(drawBoxC, RGB(0, 0, 255), 9, 11);
+        drawColoredBox(drawBoxD, RGB(255, 255, 0), 11, 13);
 
-            Rectangle(hdc, left, top, right, bottom); // 長方形を描画
+        // --- メモリDCの内容を画面に転送 ---
+        BitBlt(hdc, 0, 0, width, height, memDC, 0, 0, SRCCOPY);
 
-            SelectObject(hdc, oldBrush);
-            DeleteObject(greenBrush);
-        }
-        if (drawBoxC)
-        {
-
-            int left = 9 * width / 18;
-            int top = 18 * height / 20;
-            int right = 11 * width / 18;
-            int bottom = 19 * height / 20;
-
-            HBRUSH blueBrush = CreateSolidBrush(RGB(0, 0, 255));
-            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, blueBrush);
-
-            Rectangle(hdc, left, top, right, bottom); // 長方形を描画
-
-            SelectObject(hdc, oldBrush);
-            DeleteObject(blueBrush);
-        }
-        if (drawBoxD) 
-        {
-
-            int left = 11 * width / 18;
-            int top = 18 * height / 20;
-            int right = 13 * width / 18;
-            int bottom = 19 * height / 20;
-
-            HBRUSH yellowBrush = CreateSolidBrush(RGB(255, 255, 0));
-            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, yellowBrush);
-
-            Rectangle(hdc, left, top, right, bottom); // 長方形を描画
-
-            SelectObject(hdc, oldBrush);
-            DeleteObject(yellowBrush);
-        }
+        // --- リソース解放 ---
+        SelectObject(memDC, oldBitmap);
+        DeleteObject(backBuffer);
+        DeleteDC(memDC);
 
         EndPaint(hWnd, &ps);
+        return 0;
+
     }
     break;
     case WM_KEYDOWN:
@@ -337,48 +324,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
         case 'D':
             drawBoxA = true; // Dキーを押したらA描画フラグをON
-            RECT rectA;
-
-            rectA.left = 5 * width / 18;
-            rectA.top = 18 * height / 20;
-            rectA.right = 7 * width / 18;
-            rectA.bottom = 19 * height / 20;
-
-            InvalidateRect(hWnd, &rectA, TRUE); // 長方形の範囲のみ再描画
 
             break;
         case 'F':
             drawBoxB = true; // Fキーを押したらB描画フラグをON
-            RECT rectB;
 
-            rectB.left = 7 * width / 18;
-            rectB.top = 18 * height / 20;
-            rectB.right = 9 * width / 18;
-            rectB.bottom = 19 * height / 20;
-
-            InvalidateRect(hWnd, &rectB, TRUE); // 長方形の範囲のみ再描画
             break;
         case 'J':
             drawBoxC = true; // Jキーを押したらC描画フラグをON
-			RECT rectC;
 
-            rectC.left = 9 * width / 18;
-            rectC.top = 18 * height / 20;
-            rectC.right = 11 * width / 18;
-            rectC.bottom = 19 * height / 20;
-
-            InvalidateRect(hWnd, &rectC, TRUE); // 長方形の範囲のみ再描画
             break;
         case 'K':
             drawBoxD = true; // Kキーを押したらD描画フラグをON
-			RECT rectD;
 
-            rectD.left = 11 * width / 18;
-            rectD.top = 18 * height / 20;
-            rectD.right = 13 * width / 18;
-            rectD.bottom = 19 * height / 20;
-
-            InvalidateRect(hWnd, &rectD, TRUE); // 長方形の範囲のみ再描画
             break;
 
         }
@@ -400,7 +358,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             rectA.right = 7 * width / 18;
             rectA.bottom = 19 * height / 20;
 
-            InvalidateRect(hWnd, &rectA, TRUE); // 長方形の範囲のみ再描画
 			break;
         case 'F':
             drawBoxB = false; // Fキーを離したら四角を消す
@@ -411,7 +368,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             rectB.right = 9 * width / 18;
             rectB.bottom = 19 * height / 20;
 
-            InvalidateRect(hWnd, &rectB, TRUE); // 長方形の範囲のみ再描画
             break;
         case 'J':
             drawBoxC = false; // Jキーを離したら四角を消す
@@ -422,7 +378,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             rectC.right = 11 * width / 18;
             rectC.bottom = 19 * height / 20;
 
-            InvalidateRect(hWnd, &rectC, TRUE); // 長方形の範囲のみ再描画
             break;
         case 'K':
             drawBoxD = false; // Kキーを離したら四角を消す
@@ -433,7 +388,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             rectD.right = 13 * width / 18;
             rectD.bottom = 19 * height / 20;
 
-            InvalidateRect(hWnd, &rectD, TRUE); // 長方形の範囲のみ再描画
             break;
 
         }
