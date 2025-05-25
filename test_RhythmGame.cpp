@@ -3,6 +3,12 @@
 
 #include "framework.h"
 #include "test_RhythmGame.h"
+#include <fstream>
+#include <iostream>
+#include <string>
+#include "note.h"
+#include <vector>
+#include <sstream>
 
 #define MAX_LOADSTRING 100
 
@@ -15,6 +21,14 @@ bool drawBoxA = false;
 bool drawBoxB = false;
 bool drawBoxC = false;
 bool drawBoxD = false;
+
+
+
+
+// グローバルなノーツリスト
+std::vector<Note> notes;
+
+
 
 
 // このコード モジュールに含まれる関数の宣言を転送します:
@@ -106,10 +120,13 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
       CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
 
+   SetTimer(hWnd, 1, 16, NULL); // 16msごとに更新（約60FPS）
+
    if (!hWnd)
    {
       return FALSE;
    }
+
 
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
@@ -134,8 +151,58 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     int width = rect.right - rect.left;
     int height = rect.bottom - rect.top;
 
+
+
+
     switch (message)
     {
+
+    case WM_CREATE:
+    {
+        // 初回のノーツデータ読み込み
+        std::ifstream file("notes_data.txt");
+
+        if (file.is_open()) {
+            std::string line;
+            while (std::getline(file, line)) { // 1行ずつ読み込む
+                std::istringstream iss(line);
+                int x, y, speed;
+                char key;
+
+                if (iss >> x >> y >> speed >> key) {
+                    // 入力xをレーン位置(1〜4)と仮定してピクセル位置に変換
+                    int laneX = 0;
+                    if (x == 1) laneX = 5 * width / 18;
+                    else if (x == 2) laneX = 7 * width / 18;
+                    else if (x == 3) laneX = 9 * width / 18;
+                    else if (x == 4) laneX = 11 * width / 18;
+
+                    notes.push_back(Note{ laneX, y, speed, key });
+                }
+            }
+            file.close();
+        }
+        else {
+        }
+    }
+    break;
+
+
+    case WM_TIMER:
+    {
+        std::cout << "WM_TIMER 発生" << std::endl; // 確認用
+
+        for (auto& note : notes) {
+            note.y += note.speed; // ノーツを下へ移動
+            std::cout << "ノーツ位置: " << note.y << std::endl; // 確認用
+        }
+
+        InvalidateRect(hWnd, NULL, TRUE); // 再描画
+    }
+
+    break;
+
+
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
@@ -162,7 +229,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         HPEN blackPen = CreatePen(PS_SOLID, 2, RGB(0, 0, 0)); // 太さ2pxの黒色の線
         HPEN oldPen = (HPEN)SelectObject(hdc, blackPen);
 
-        // 画面を3分割するためのX座標
         int x1 = 5 * width / 18;
         int x2 = 7 * width / 18;
         int x3 = 9 * width / 18;
@@ -186,6 +252,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         SelectObject(hdc, oldPen);
         DeleteObject(blackPen);
+
+
+        for (const auto& note : notes) {
+            RECT noteRect = { note.x, note.y, note.x + width / 9, note.y + height / 20 };
+            HBRUSH brush = CreateSolidBrush(RGB(50, 50, 50));
+            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, brush);
+
+            Rectangle(hdc, noteRect.left, noteRect.top, noteRect.right, noteRect.bottom);
+
+            SelectObject(hdc, oldBrush);
+            DeleteObject(brush);
+        }
 
         if (drawBoxA)
         {
@@ -360,6 +438,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         }
         break;
+
 
     case WM_DESTROY:
         PostQuitMessage(0);

@@ -27,6 +27,9 @@
     <ClInclude Include="test_RhythmGame.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="note.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="test_RhythmGame.cpp">
@@ -45,5 +48,11 @@
     <Image Include="test_RhythmGame.ico">
       <Filter>リソース ファイル</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="notes_data.txt">
+      <Filter>ソース ファイル</Filter>
+    </Text>
+    <Text Include="notes_how_to_write.txt" />
   </ItemGroup>
 </Project>
