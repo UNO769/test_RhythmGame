@@ -252,6 +252,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         FillRect(memDC, &clientRect, bgBrush);
         DeleteObject(bgBrush);
 
+        // --- 判定ラインを描画 ---
+
+		HBRUSH lineBrush = CreateSolidBrush(RGB(200, 200, 200));
+		HBRUSH oldBrush = (HBRUSH)SelectObject(memDC, lineBrush);
+
+        int left = 5 * width / 18;
+        int right = 13 * width / 18;
+        int top = 18 * height / 20;
+        int bottom = 19 * height / 20;
+
+        Rectangle(memDC, left, top, right, bottom);
+
+        SelectObject(memDC, oldBrush);
+		DeleteObject(lineBrush);
+
         // --- 線を描画 ---
         HPEN blackPen = CreatePen(PS_SOLID, 2, RGB(0, 0, 0));
         HPEN oldPen = (HPEN)SelectObject(memDC, blackPen);
