@@ -5,10 +5,10 @@ struct Note {
     int x;
     int y;
     int speed;
-    char key;
+    int key;
 
-    Note() : x(0), y(0), speed(0), key(' ') {}
-    Note(int px, int py, int pspeed, char pkey) : x(px), y(py), speed(pspeed), key(pkey) {}
+    Note() : x(0), y(0), speed(0), key(0) {}
+    Note(int px, int py, int pspeed, int pkey) : x(px), y(py), speed(pspeed), key(pkey) {}
 };
 
 #endif // NOTE_H

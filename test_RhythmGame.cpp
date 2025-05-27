@@ -9,6 +9,8 @@
 #include "note.h"
 #include <vector>
 #include <sstream>
+#include <algorithm>
+
 
 #define MAX_LOADSTRING 100
 
@@ -22,6 +24,11 @@ bool drawBoxB = false;
 bool drawBoxC = false;
 bool drawBoxD = false;
 
+// ノーツ処理成功描画フラグ    
+bool drawNoteA = false;
+bool drawNoteB = false;
+bool drawNoteC = false;
+bool drawNoteD = false;
 
 
 
@@ -151,6 +158,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     int width = rect.right - rect.left;
     int height = rect.bottom - rect.top;
 
+    int judgeTop = 17 * height / 20;
+    int judgeBottom = 18 * height / 20;
 
 
 
@@ -167,8 +176,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             std::string line;
             while (std::getline(file, line)) { // 1行ずつ読み込む
                 std::istringstream iss(line);
-                int x, y, speed;
-                char key;
+                int x, y, speed, key;
 
                 if (iss >> x >> y >> speed >> key) {
                     // 入力xをレーン位置(1〜4)と仮定してピクセル位置に変換
@@ -192,12 +200,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     case WM_TIMER:
     {
-        std::cout << "WM_TIMER 発生" << std::endl; // 確認用
-
+        // ノーツの移動
         for (auto& note : notes) {
-            note.y += note.speed; // ノーツを下へ移動
-            std::cout << "ノーツ位置: " << note.y << std::endl; // 確認用
+            note.y += note.speed;
         }
+
+        // 範囲外に出たノーツを削除（画面下）
+        notes.erase(std::remove_if(notes.begin(), notes.end(), [height](const Note& n) {
+            return n.y > height;  // 画面下に出たら削除
+            }), notes.end());
+
 
         RECT rectN;
 
@@ -231,6 +243,121 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         break;
+
+
+    case WM_KEYDOWN:
+
+        switch (wParam)
+        {
+        case 'D':
+
+            drawBoxA = true; // Dキーを押したらA描画フラグをOn
+
+            for (auto it = notes.begin(); it != notes.end(); ) {
+                if (it->key == 1 && it->y >= judgeTop && it->y <= judgeBottom) {
+                    drawNoteA = true;
+                    it = notes.erase(it);  // 条件を満たしたら削除
+                }
+                else {
+                    ++it;
+                }
+            }
+            break;
+        case 'F':
+            drawBoxB = true; // Fキーを押したらB描画フラグをON
+            for (auto it = notes.begin(); it != notes.end(); ) {
+                if (it->key == 2 && it->y >= judgeTop && it->y <= judgeBottom) {
+                    drawNoteB = true;
+                    it = notes.erase(it);  // 条件を満たしたら削除
+                }
+                else {
+                    ++it;
+                }
+            }
+            break;
+        case 'J':
+            drawBoxC = true; // Jキーを押したらC描画フラグをON
+            for (auto it = notes.begin(); it != notes.end(); ) {
+                if (it->key == 3 && it->y >= judgeTop && it->y <= judgeBottom) {
+                    drawNoteC = true;
+                    it = notes.erase(it);  // 条件を満たしたら削除
+                }
+                else {
+                    ++it;
+                }
+            }
+            break;
+        case 'K':
+            drawBoxD = true; // Kキーを押したらD描画フラグをON
+            for (auto it = notes.begin(); it != notes.end(); ) {
+                if (it->key == 4 && it->y >= judgeTop && it->y <= judgeBottom) {
+                    drawNoteD = true;
+                    it = notes.erase(it);  // 条件を満たしたら削除
+                }
+                else {
+                    ++it;
+                }
+            }
+            break;
+
+        }
+        break;
+
+
+
+    case WM_KEYUP:
+
+
+        switch (wParam)
+        {
+        case 'D':
+            drawBoxA = false; // Dキーを離したら四角を消す
+            drawNoteA = false;
+            RECT rectA;
+
+            rectA.left = 5 * width / 18;
+            rectA.top = 18 * height / 20;
+            rectA.right = 7 * width / 18;
+            rectA.bottom = 19 * height / 20;
+
+            break;
+        case 'F':
+            drawBoxB = false; // Fキーを離したら四角を消す
+            drawNoteB = false;
+            RECT rectB;
+
+            rectB.left = 7 * width / 18;
+            rectB.top = 18 * height / 20;
+            rectB.right = 9 * width / 18;
+            rectB.bottom = 19 * height / 20;
+
+            break;
+        case 'J':
+            drawBoxC = false; // Jキーを離したら四角を消す
+            drawNoteC = false;
+            RECT rectC;
+
+            rectC.left = 9 * width / 18;
+            rectC.top = 18 * height / 20;
+            rectC.right = 11 * width / 18;
+            rectC.bottom = 19 * height / 20;
+
+            break;
+        case 'K':
+            drawBoxD = false; // Kキーを離したら四角を消す
+            drawNoteD = false;
+            RECT rectD;
+
+            rectD.left = 11 * width / 18;
+            rectD.top = 18 * height / 20;
+            rectD.right = 13 * width / 18;
+            rectD.bottom = 19 * height / 20;
+
+            break;
+
+        }
+        break;
+
 
     case WM_PAINT:
     {
@@ -301,6 +428,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         // --- 各ボックスを描画 ---
         auto drawColoredBox = [&](bool condition, COLORREF color, int leftMul, int rightMul) {
             if (!condition) return;
+
+
             int left = leftMul * width / 18;
             int right = rightMul * width / 18;
             int top = 18 * height / 20;
@@ -319,6 +448,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         drawColoredBox(drawBoxB, RGB(0, 255, 0), 7, 9);
         drawColoredBox(drawBoxC, RGB(0, 0, 255), 9, 11);
         drawColoredBox(drawBoxD, RGB(255, 255, 0), 11, 13);
+        if (drawNoteA) {
+            drawColoredBox(drawBoxA, RGB(255, 150, 150), 5, 7);
+        }
+        if (drawNoteB) {
+            drawColoredBox(drawBoxA, RGB(150, 255, 150), 5, 7);
+        }
+        if (drawNoteC) {
+            drawColoredBox(drawBoxA, RGB(150, 150, 255), 5, 7);
+        }
+        if (drawNoteD) {
+            drawColoredBox(drawBoxA, RGB(255, 255, 150), 5, 7);
+        }
 
         // --- メモリDCの内容を画面に転送 ---
         BitBlt(hdc, 0, 0, width, height, memDC, 0, 0, SRCCOPY);
@@ -333,80 +474,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     }
     break;
-    case WM_KEYDOWN:
-
-        switch (wParam)
-        {
-        case 'D':
-            drawBoxA = true; // Dキーを押したらA描画フラグをON
-
-            break;
-        case 'F':
-            drawBoxB = true; // Fキーを押したらB描画フラグをON
-
-            break;
-        case 'J':
-            drawBoxC = true; // Jキーを押したらC描画フラグをON
-
-            break;
-        case 'K':
-            drawBoxD = true; // Kキーを押したらD描画フラグをON
-
-            break;
-
-        }
-        break;
-
-
-
-    case WM_KEYUP:
-
-
-        switch (wParam)
-        {
-		case 'D':
-            drawBoxA = false; // Dキーを離したら四角を消す
-			RECT rectA;
-
-            rectA.left = 5 * width / 18;
-            rectA.top = 18 * height / 20;
-            rectA.right = 7 * width / 18;
-            rectA.bottom = 19 * height / 20;
-
-			break;
-        case 'F':
-            drawBoxB = false; // Fキーを離したら四角を消す
-            RECT rectB;
-
-            rectB.left = 7 * width / 18;
-            rectB.top = 18 * height / 20;
-            rectB.right = 9 * width / 18;
-            rectB.bottom = 19 * height / 20;
-
-            break;
-        case 'J':
-            drawBoxC = false; // Jキーを離したら四角を消す
-            RECT rectC;
-
-            rectC.left = 9 * width / 18;
-            rectC.top = 18 * height / 20;
-            rectC.right = 11 * width / 18;
-            rectC.bottom = 19 * height / 20;
-
-            break;
-        case 'K':
-            drawBoxD = false; // Kキーを離したら四角を消す
-            RECT rectD;
-
-            rectD.left = 11 * width / 18;
-            rectD.top = 18 * height / 20;
-            rectD.right = 13 * width / 18;
-            rectD.bottom = 19 * height / 20;
-
-            break;
-
-        }
-        break;
 
 
     case WM_DESTROY:
