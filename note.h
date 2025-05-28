@@ -11,4 +11,8 @@ struct Note {
     Note(int px, int py, int pspeed, int pkey) : x(px), y(py), speed(pspeed), key(pkey) {}
 };
 
+
+
+
+
 #endif // NOTE_H

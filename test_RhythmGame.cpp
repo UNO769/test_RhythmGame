@@ -10,6 +10,7 @@
 #include <vector>
 #include <sstream>
 #include <algorithm>
+#include <chrono>
 
 
 #define MAX_LOADSTRING 100
@@ -19,16 +20,28 @@ HINSTANCE hInst;                                // 現在のインターフェ�
 WCHAR szTitle[MAX_LOADSTRING];                  // タイトル バーのテキスト
 WCHAR szWindowClass[MAX_LOADSTRING];            // メイン ウィンドウ クラス名
 
+
+
 bool drawBoxA = false;
 bool drawBoxB = false;
 bool drawBoxC = false;
 bool drawBoxD = false;
 
 // ノーツ処理成功描画フラグ    
-bool drawNoteA = false;
-bool drawNoteB = false;
-bool drawNoteC = false;
-bool drawNoteD = false;
+bool drawNoteA_pf = false;
+bool drawNoteB_pf = false;
+bool drawNoteC_pf = false;
+bool drawNoteD_pf = false;
+
+bool drawNoteA_gr = false;
+bool drawNoteB_gr = false;
+bool drawNoteC_gr = false;
+bool drawNoteD_gr = false;
+
+bool drawNoteA_gd = false;
+bool drawNoteB_gd = false;
+bool drawNoteC_gd = false;
+bool drawNoteD_gd = false;
 
 
 
@@ -158,9 +171,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     int width = rect.right - rect.left;
     int height = rect.bottom - rect.top;
 
-    int judgeTop = 17 * height / 20;
-    int judgeBottom = 18 * height / 20;
+    int judgeTop = 15 * height / 20;
+    int judgeBottom = 19 * height / 20;
 
+    int judgeTop_b = 15 * height / 18;
+    int judgeBottom_b = 19 * height * (49 / 50);
+
+    int judgeTop_c = 15 * height / 10;
+    int judgeBottom_c = 19 * height * (99 / 100);
 
 
     switch (message)
@@ -255,7 +273,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
             for (auto it = notes.begin(); it != notes.end(); ) {
                 if (it->key == 1 && it->y >= judgeTop && it->y <= judgeBottom) {
-                    drawNoteA = true;
+                    drawNoteA_pf = true;
+                    it = notes.erase(it);  // 条件を満たしたら削除
+                }
+                else if (it->key == 1 && it->y >= judgeTop_b && it->y <= judgeBottom_b) {
+                    drawNoteA_gr = true;
+                    it = notes.erase(it);  // 条件を満たしたら削除
+                }
+                else if (it->key == 1 && it->y >= judgeTop_c && it->y <= judgeBottom_c) {
+                    drawNoteA_gd = true;
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
                 else {
@@ -267,7 +293,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             drawBoxB = true; // Fキーを押したらB描画フラグをON
             for (auto it = notes.begin(); it != notes.end(); ) {
                 if (it->key == 2 && it->y >= judgeTop && it->y <= judgeBottom) {
-                    drawNoteB = true;
+                    drawNoteB_pf = true;
+                    it = notes.erase(it);  // 条件を満たしたら削除
+                }
+                else if (it->key == 2 && it->y >= judgeTop_b && it->y <= judgeBottom_b) {
+                    drawNoteB_gr = true;
+                    it = notes.erase(it);  // 条件を満たしたら削除
+                }
+                else if (it->key == 2 && it->y >= judgeTop_c && it->y <= judgeBottom_c) {
+                    drawNoteB_gd = true;
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
                 else {
@@ -279,7 +313,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             drawBoxC = true; // Jキーを押したらC描画フラグをON
             for (auto it = notes.begin(); it != notes.end(); ) {
                 if (it->key == 3 && it->y >= judgeTop && it->y <= judgeBottom) {
-                    drawNoteC = true;
+                    drawNoteC_pf = true;
+                    it = notes.erase(it);  // 条件を満たしたら削除
+                }
+                else if (it->key == 3 && it->y >= judgeTop_b && it->y <= judgeBottom_b) {
+                    drawNoteC_gr = true;
+                    it = notes.erase(it);  // 条件を満たしたら削除
+                }
+                else if (it->key == 3 && it->y >= judgeTop_c && it->y <= judgeBottom_c) {
+                    drawNoteC_gd = true;
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
                 else {
@@ -291,7 +333,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             drawBoxD = true; // Kキーを押したらD描画フラグをON
             for (auto it = notes.begin(); it != notes.end(); ) {
                 if (it->key == 4 && it->y >= judgeTop && it->y <= judgeBottom) {
-                    drawNoteD = true;
+                    drawNoteD_pf = true;
+                    it = notes.erase(it);  // 条件を満たしたら削除
+                }
+                else if (it->key == 4 && it->y >= judgeTop_b && it->y <= judgeBottom_b) {
+                    drawNoteD_gr = true;
+                    it = notes.erase(it);  // 条件を満たしたら削除
+                }
+                else if (it->key == 4 && it->y >= judgeTop_c && it->y <= judgeBottom_c) {
+                    drawNoteD_gd = true;
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
                 else {
@@ -312,7 +362,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
         case 'D':
             drawBoxA = false; // Dキーを離したら四角を消す
-            drawNoteA = false;
             RECT rectA;
 
             rectA.left = 5 * width / 18;
@@ -323,7 +372,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             break;
         case 'F':
             drawBoxB = false; // Fキーを離したら四角を消す
-            drawNoteB = false;
             RECT rectB;
 
             rectB.left = 7 * width / 18;
@@ -334,7 +382,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             break;
         case 'J':
             drawBoxC = false; // Jキーを離したら四角を消す
-            drawNoteC = false;
             RECT rectC;
 
             rectC.left = 9 * width / 18;
@@ -345,7 +392,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             break;
         case 'K':
             drawBoxD = false; // Kキーを離したら四角を消す
-            drawNoteD = false;
             RECT rectD;
 
             rectD.left = 11 * width / 18;
@@ -448,18 +494,112 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         drawColoredBox(drawBoxB, RGB(0, 255, 0), 7, 9);
         drawColoredBox(drawBoxC, RGB(0, 0, 255), 9, 11);
         drawColoredBox(drawBoxD, RGB(255, 255, 0), 11, 13);
-        if (drawNoteA) {
+        if (drawNoteA_pf) {
             drawColoredBox(drawBoxA, RGB(255, 150, 150), 5, 7);
         }
-        if (drawNoteB) {
+        if (drawNoteB_pf) {
             drawColoredBox(drawBoxA, RGB(150, 255, 150), 5, 7);
         }
-        if (drawNoteC) {
+        if (drawNoteC_pf) {
             drawColoredBox(drawBoxA, RGB(150, 150, 255), 5, 7);
         }
-        if (drawNoteD) {
+        if (drawNoteD_pf) {
             drawColoredBox(drawBoxA, RGB(255, 255, 150), 5, 7);
         }
+
+
+		// --- 判定円を描画 ---
+        int radius = 50;
+        int centerY = 7 * height / 8;
+
+        if (drawNoteA_gd) {
+            HBRUSH A_d_Brush = CreateSolidBrush(RGB(0, 0, 255));
+            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, A_d_Brush);
+        }
+        if (drawNoteA_gr) {
+            HBRUSH A_d_Brush = CreateSolidBrush(RGB(0, 255, 0));
+            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, A_d_Brush);
+        }
+        if (drawNoteA_pf) {
+            HBRUSH A_d_Brush = CreateSolidBrush(RGB(255, 0, 0));
+            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, A_d_Brush);
+        }
+
+
+		if (drawNoteA_pf || drawNoteA_gd || drawNoteA_gr) {
+            int centerX = 3 * width / 9;
+            Ellipse(hdc, centerX - radius, centerY - radius, centerX + radius, centerY + radius);
+            drawNoteA_pf = false;
+            drawNoteA_gr = false;
+            drawNoteA_gd = false;
+		}
+
+        if (drawNoteB_gd) {
+            HBRUSH B_d_Brush = CreateSolidBrush(RGB(0, 0, 255));
+            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, B_d_Brush);
+        }
+        if (drawNoteB_gr) {
+            HBRUSH B_d_Brush = CreateSolidBrush(RGB(0, 255, 0));
+            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, B_d_Brush);
+        }
+        if (drawNoteB_pf) {
+            HBRUSH B_d_Brush = CreateSolidBrush(RGB(255, 0, 0));
+            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, B_d_Brush);
+        }
+
+
+        if (drawNoteB_pf || drawNoteB_gd || drawNoteB_gr) {
+            int centerX = 4 * width / 9;
+            Ellipse(hdc, centerX - radius, centerY - radius, centerX + radius, centerY + radius);
+            drawNoteB_pf = false;
+            drawNoteB_gr = false;
+            drawNoteB_gd = false;
+        }
+
+        if (drawNoteC_gd) {
+            HBRUSH C_d_Brush = CreateSolidBrush(RGB(0, 0, 255));
+            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, C_d_Brush);
+        }
+        if (drawNoteC_gr) {
+            HBRUSH C_d_Brush = CreateSolidBrush(RGB(0, 255, 0));
+            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, C_d_Brush);
+        }
+        if (drawNoteC_pf) {
+            HBRUSH C_d_Brush = CreateSolidBrush(RGB(255, 0, 0));
+            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, C_d_Brush);
+        }
+
+
+        if (drawNoteC_pf || drawNoteC_gd || drawNoteC_gr) {
+            int centerX = 5 * width / 9;
+            Ellipse(hdc, centerX - radius, centerY - radius, centerX + radius, centerY + radius);
+            drawNoteC_pf = false;
+            drawNoteC_gr = false;
+            drawNoteC_gd = false;
+        }
+
+        if (drawNoteD_gd) {
+            HBRUSH D_d_Brush = CreateSolidBrush(RGB(0, 0, 255));
+            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, D_d_Brush);
+        }
+        if (drawNoteD_gr) {
+            HBRUSH D_d_Brush = CreateSolidBrush(RGB(0, 255, 0));
+            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, D_d_Brush);
+        }
+        if (drawNoteD_pf) {
+            HBRUSH D_d_Brush = CreateSolidBrush(RGB(255, 0, 0));
+            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, D_d_Brush);
+        }
+
+
+        if (drawNoteD_pf || drawNoteD_gd || drawNoteD_gr) {
+            int centerX = 6 * width / 9;
+            Ellipse(hdc, centerX - radius, centerY - radius, centerX + radius, centerY + radius);
+            drawNoteD_pf = false;
+            drawNoteD_gr = false;
+            drawNoteD_gd = false;
+        }
+
 
         // --- メモリDCの内容を画面に転送 ---
         BitBlt(hdc, 0, 0, width, height, memDC, 0, 0, SRCCOPY);
