@@ -171,14 +171,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     int width = rect.right - rect.left;
     int height = rect.bottom - rect.top;
 
-    int judgeTop = 15 * height / 20;
-    int judgeBottom = 19 * height / 20;
+    int judgeTop = 30 * height / 40;
+    int judgeBottom = 76 * height / 80;
 
-    int judgeTop_b = 15 * height / 18;
-    int judgeBottom_b = 19 * height * (49 / 50);
+    int judgeTop_b = 26 * height / 40;
+    int judgeBottom_b = 78 * height / 80;
 
-    int judgeTop_c = 15 * height / 10;
-    int judgeBottom_c = 19 * height * (99 / 100);
+    int judgeTop_c = 20 * height / 40;
+    int judgeBottom_c = 79 * height / 80;
 
 
     switch (message)
