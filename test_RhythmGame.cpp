@@ -11,6 +11,9 @@
 #include <sstream>
 #include <algorithm>
 #include <chrono>
+#include <windows.h>
+#include <mmsystem.h>
+#pragma comment(lib, "winmm.lib")
 
 
 #define MAX_LOADSTRING 100
@@ -400,6 +403,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             rectD.bottom = 19 * height / 20;
 
             break;
+        case 'S':
+            PlaySound(L"creator.wav", NULL, SND_FILENAME | SND_ASYNC);
+
 
         }
         break;
