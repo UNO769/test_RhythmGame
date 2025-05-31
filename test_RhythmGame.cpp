@@ -174,13 +174,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     int width = rect.right - rect.left;
     int height = rect.bottom - rect.top;
 
-    int judgeTop = 30 * height / 40;
-    int judgeBottom = 76 * height / 80;
+    int judgeTop = 71 * height / 80;
+    int judgeBottom = 77 * height / 80;
 
-    int judgeTop_b = 26 * height / 40;
-    int judgeBottom_b = 78 * height / 80;
+    int judgeTop_b = 69 * height / 80;
+    int judgeBottom_b = 79 * height / 80;
 
-    int judgeTop_c = 20 * height / 40;
+    int judgeTop_c = 66 * height / 80;
     int judgeBottom_c = 79 * height / 80;
 
 
@@ -520,90 +520,90 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         if (drawNoteA_gd) {
             HBRUSH A_d_Brush = CreateSolidBrush(RGB(0, 0, 255));
-            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, A_d_Brush);
+            HBRUSH oldBrush = (HBRUSH)SelectObject(memDC, A_d_Brush);
         }
         if (drawNoteA_gr) {
             HBRUSH A_d_Brush = CreateSolidBrush(RGB(0, 255, 0));
-            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, A_d_Brush);
+            HBRUSH oldBrush = (HBRUSH)SelectObject(memDC, A_d_Brush);
         }
         if (drawNoteA_pf) {
             HBRUSH A_d_Brush = CreateSolidBrush(RGB(255, 0, 0));
-            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, A_d_Brush);
+            HBRUSH oldBrush = (HBRUSH)SelectObject(memDC, A_d_Brush);
         }
 
 
 		if (drawNoteA_pf || drawNoteA_gd || drawNoteA_gr) {
-            int centerX = 3 * width / 9;
-            Ellipse(hdc, centerX - radius, centerY - radius, centerX + radius, centerY + radius);
             drawNoteA_pf = false;
             drawNoteA_gr = false;
             drawNoteA_gd = false;
+            int centerX = 3 * width / 9;
+            Ellipse(memDC, centerX - radius, centerY - radius, centerX + radius, centerY + radius);
 		}
 
         if (drawNoteB_gd) {
             HBRUSH B_d_Brush = CreateSolidBrush(RGB(0, 0, 255));
-            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, B_d_Brush);
+            HBRUSH oldBrush = (HBRUSH)SelectObject(memDC, B_d_Brush);
         }
         if (drawNoteB_gr) {
             HBRUSH B_d_Brush = CreateSolidBrush(RGB(0, 255, 0));
-            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, B_d_Brush);
+            HBRUSH oldBrush = (HBRUSH)SelectObject(memDC, B_d_Brush);
         }
         if (drawNoteB_pf) {
             HBRUSH B_d_Brush = CreateSolidBrush(RGB(255, 0, 0));
-            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, B_d_Brush);
+            HBRUSH oldBrush = (HBRUSH)SelectObject(memDC, B_d_Brush);
         }
 
 
         if (drawNoteB_pf || drawNoteB_gd || drawNoteB_gr) {
-            int centerX = 4 * width / 9;
-            Ellipse(hdc, centerX - radius, centerY - radius, centerX + radius, centerY + radius);
             drawNoteB_pf = false;
             drawNoteB_gr = false;
             drawNoteB_gd = false;
+            int centerX = 4 * width / 9;
+            Ellipse(memDC, centerX - radius, centerY - radius, centerX + radius, centerY + radius);
         }
 
         if (drawNoteC_gd) {
             HBRUSH C_d_Brush = CreateSolidBrush(RGB(0, 0, 255));
-            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, C_d_Brush);
+            HBRUSH oldBrush = (HBRUSH)SelectObject(memDC, C_d_Brush);
         }
         if (drawNoteC_gr) {
             HBRUSH C_d_Brush = CreateSolidBrush(RGB(0, 255, 0));
-            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, C_d_Brush);
+            HBRUSH oldBrush = (HBRUSH)SelectObject(memDC, C_d_Brush);
         }
         if (drawNoteC_pf) {
             HBRUSH C_d_Brush = CreateSolidBrush(RGB(255, 0, 0));
-            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, C_d_Brush);
+            HBRUSH oldBrush = (HBRUSH)SelectObject(memDC, C_d_Brush);
         }
 
 
         if (drawNoteC_pf || drawNoteC_gd || drawNoteC_gr) {
-            int centerX = 5 * width / 9;
-            Ellipse(hdc, centerX - radius, centerY - radius, centerX + radius, centerY + radius);
             drawNoteC_pf = false;
             drawNoteC_gr = false;
             drawNoteC_gd = false;
+            int centerX = 5 * width / 9;
+            Ellipse(memDC, centerX - radius, centerY - radius, centerX + radius, centerY + radius);
         }
 
         if (drawNoteD_gd) {
             HBRUSH D_d_Brush = CreateSolidBrush(RGB(0, 0, 255));
-            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, D_d_Brush);
+            HBRUSH oldBrush = (HBRUSH)SelectObject(memDC, D_d_Brush);
         }
         if (drawNoteD_gr) {
             HBRUSH D_d_Brush = CreateSolidBrush(RGB(0, 255, 0));
-            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, D_d_Brush);
+            HBRUSH oldBrush = (HBRUSH)SelectObject(memDC, D_d_Brush);
         }
         if (drawNoteD_pf) {
             HBRUSH D_d_Brush = CreateSolidBrush(RGB(255, 0, 0));
-            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, D_d_Brush);
+            HBRUSH oldBrush = (HBRUSH)SelectObject(memDC, D_d_Brush);
         }
 
 
         if (drawNoteD_pf || drawNoteD_gd || drawNoteD_gr) {
-            int centerX = 6 * width / 9;
-            Ellipse(hdc, centerX - radius, centerY - radius, centerX + radius, centerY + radius);
             drawNoteD_pf = false;
             drawNoteD_gr = false;
             drawNoteD_gd = false;
+            int centerX = 6 * width / 9;
+            Ellipse(memDC, centerX - radius, centerY - radius, centerX + radius, centerY + radius);
         }
 
 
