@@ -21,11 +21,13 @@
 
 
 
-int score = 0;
+int score = 100;
 
 void DrawScore(HDC memDC, int x, int y, int score) {
-    std::wstring text = L"Score : " + std::to_wstring(score);
-    TextOutW(memDC, x, y, text.c_str(), static_cast<int>(text.length()));
+    std::string str = "Score: " + std::to_string(score);
+
+    // ANSI文字列として描画
+    TextOutA(memDC, x, y, str.c_str(), str.length());
 }
 void AddScore(int amount) {
     score += amount;
@@ -317,17 +319,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             for (auto it = notes.begin(); it != notes.end(); ) {
                 if (it->key == 2 && it->y >= judgeTop && it->y <= judgeBottom) {
                     drawNoteB_pf = true;
-                    score += 30;
+                    AddScore(30);
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
                 else if (it->key == 2 && it->y >= judgeTop_b && it->y <= judgeBottom_b) {
                     drawNoteB_gr = true;
-                    score += 20;
+                    AddScore(20);
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
                 else if (it->key == 2 && it->y >= judgeTop_c && it->y <= judgeBottom_c) {
                     drawNoteB_gd = true;
-                    score += 10;
+                    AddScore(10);
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
                 else {
@@ -340,17 +342,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             for (auto it = notes.begin(); it != notes.end(); ) {
                 if (it->key == 3 && it->y >= judgeTop && it->y <= judgeBottom) {
                     drawNoteC_pf = true;
-                    score += 30;
+                    AddScore(30);
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
                 else if (it->key == 3 && it->y >= judgeTop_b && it->y <= judgeBottom_b) {
                     drawNoteC_gr = true;
-                    score += 20;
+                    AddScore(20);
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
                 else if (it->key == 3 && it->y >= judgeTop_c && it->y <= judgeBottom_c) {
                     drawNoteC_gd = true;
-                    score += 10;
+                    AddScore(10);
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
                 else {
@@ -363,17 +365,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             for (auto it = notes.begin(); it != notes.end(); ) {
                 if (it->key == 4 && it->y >= judgeTop && it->y <= judgeBottom) {
                     drawNoteD_pf = true;
-                    score += 30;
+                    AddScore(30);
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
                 else if (it->key == 4 && it->y >= judgeTop_b && it->y <= judgeBottom_b) {
                     drawNoteD_gr = true;
-                    score += 20;
+                    AddScore(20);
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
                 else if (it->key == 4 && it->y >= judgeTop_c && it->y <= judgeBottom_c) {
                     drawNoteD_gd = true;
-                    score += 10;
+                    AddScore(10);
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
                 else {
@@ -477,10 +479,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         // --- スコアを表示 ---
 
-        DrawScore(memDC, 50, 50, score);
-
-
-
+        DrawScore(memDC, width/2, height/2, score);
 
         // --- 線を描画 ---
         HPEN blackPen = CreatePen(PS_SOLID, 2, RGB(0, 0, 0));
