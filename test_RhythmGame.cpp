@@ -29,9 +29,7 @@ void DrawScore(HDC memDC, int x, int y, int score) {
     // ANSI文字列として描画
     TextOutA(memDC, x, y, str.c_str(), str.length());
 }
-void AddScore(int amount) {
-    score += amount;
-}
+
 
 #define MAX_LOADSTRING 100
 
@@ -296,17 +294,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             for (auto it = notes.begin(); it != notes.end(); ) {
                 if (it->key == 1 && it->y >= judgeTop && it->y <= judgeBottom) {
                     drawNoteA_pf = true;
-                    AddScore(30);
+                    score += 30;
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
                 else if (it->key == 1 && it->y >= judgeTop_b && it->y <= judgeBottom_b) {
                     drawNoteA_gr = true;
-                    AddScore(20);
+                    score += 20;
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
                 else if (it->key == 1 && it->y >= judgeTop_c && it->y <= judgeBottom_c) {
                     drawNoteA_gd = true;
-                    AddScore(10);
+                    score += 10;
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
                 else {
@@ -319,17 +317,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             for (auto it = notes.begin(); it != notes.end(); ) {
                 if (it->key == 2 && it->y >= judgeTop && it->y <= judgeBottom) {
                     drawNoteB_pf = true;
-                    AddScore(30);
+                    score += 30;
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
                 else if (it->key == 2 && it->y >= judgeTop_b && it->y <= judgeBottom_b) {
                     drawNoteB_gr = true;
-                    AddScore(20);
+                    score += 20;
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
                 else if (it->key == 2 && it->y >= judgeTop_c && it->y <= judgeBottom_c) {
                     drawNoteB_gd = true;
-                    AddScore(10);
+                    score += 10;
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
                 else {
@@ -342,17 +340,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             for (auto it = notes.begin(); it != notes.end(); ) {
                 if (it->key == 3 && it->y >= judgeTop && it->y <= judgeBottom) {
                     drawNoteC_pf = true;
-                    AddScore(30);
+                    score += 30;
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
                 else if (it->key == 3 && it->y >= judgeTop_b && it->y <= judgeBottom_b) {
                     drawNoteC_gr = true;
-                    AddScore(20);
+                    score += 20;
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
                 else if (it->key == 3 && it->y >= judgeTop_c && it->y <= judgeBottom_c) {
                     drawNoteC_gd = true;
-                    AddScore(10);
+                    score += 10;
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
                 else {
@@ -365,17 +363,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             for (auto it = notes.begin(); it != notes.end(); ) {
                 if (it->key == 4 && it->y >= judgeTop && it->y <= judgeBottom) {
                     drawNoteD_pf = true;
-                    AddScore(30);
+                    score += 30;
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
                 else if (it->key == 4 && it->y >= judgeTop_b && it->y <= judgeBottom_b) {
                     drawNoteD_gr = true;
-                    AddScore(20);
+                    score += 20;
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
                 else if (it->key == 4 && it->y >= judgeTop_c && it->y <= judgeBottom_c) {
                     drawNoteD_gd = true;
-                    AddScore(10);
+                    score += 10;
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
                 else {
