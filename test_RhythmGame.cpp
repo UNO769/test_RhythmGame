@@ -24,8 +24,27 @@ int Notesum = 0;
 int score = 100;
 int Notescore = 0;
 
+int score_d = 0;
+
 void DrawScore(HDC memDC, int x, int y, int score) {
     std::string str = "Score: " + std::to_string(score) + "%";
+
+    // ANSI文字列として描画
+    TextOutA(memDC, x, y, str.c_str(), str.length());
+}
+
+void A_DrawScore_D(HDC memDC, int x, int y, int score_d) {
+    std::string str = "";
+	if (score_d == 2) {
+        std::string str = "perfect";
+	}
+    else if (score_d == 1) {
+        std::string str = "great";
+    }
+    else {
+		std::string str = "good";
+    }
+
 
     // ANSI文字列として描画
     TextOutA(memDC, x, y, str.c_str(), str.length());
@@ -284,7 +303,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         break;
-
 
     case WM_KEYDOWN:
 
@@ -550,31 +568,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
 
 
-		// --- 判定円を描画 ---
+		// --- 判定を描画 ---
         int radius = 50;
         int centerY = 7 * height / 8;
 
         if (drawNoteA_gd) {
-            HBRUSH A_d_Brush = CreateSolidBrush(RGB(0, 0, 255));
-            HBRUSH oldBrush = (HBRUSH)SelectObject(memDC, A_d_Brush);
+			A_DrawScore_D(memDC, 5 * width / 18, 19 * height / 20, 0);
         }
         if (drawNoteA_gr) {
-            HBRUSH A_d_Brush = CreateSolidBrush(RGB(0, 255, 0));
-            HBRUSH oldBrush = (HBRUSH)SelectObject(memDC, A_d_Brush);
+			A_DrawScore_D(memDC, 5 * width / 18, 19 * height / 20, 1);
         }
         if (drawNoteA_pf) {
-            HBRUSH A_d_Brush = CreateSolidBrush(RGB(255, 0, 0));
-            HBRUSH oldBrush = (HBRUSH)SelectObject(memDC, A_d_Brush);
+            A_DrawScore_D(memDC, 5 * width / 18, 19 * height / 20, 2);
         }
 
-
-		if (drawNoteA_pf || drawNoteA_gd || drawNoteA_gr) {
-            drawNoteA_pf = false;
-            drawNoteA_gr = false;
-            drawNoteA_gd = false;
-            int centerX = 3 * width / 9;
-            Ellipse(memDC, centerX - radius, centerY - radius, centerX + radius, centerY + radius);
-		}
 
         if (drawNoteB_gd) {
             HBRUSH B_d_Brush = CreateSolidBrush(RGB(0, 0, 255));
