@@ -50,6 +50,57 @@ void A_DrawScore_D(HDC memDC, int x, int y, int score_d) {
     TextOutA(memDC, x, y, str.c_str(), str.length());
 }
 
+void B_DrawScore_D(HDC memDC, int x, int y, int score_d) {
+    std::string str = "";
+    if (score_d == 2) {
+        std::string str = "perfect";
+    }
+    else if (score_d == 1) {
+        std::string str = "great";
+    }
+    else {
+        std::string str = "good";
+    }
+
+
+    // ANSI文字列として描画
+    TextOutA(memDC, x, y, str.c_str(), str.length());
+}
+
+void C_DrawScore_D(HDC memDC, int x, int y, int score_d) {
+    std::string str = "";
+    if (score_d == 2) {
+        std::string str = "perfect";
+    }
+    else if (score_d == 1) {
+        std::string str = "great";
+    }
+    else {
+        std::string str = "good";
+    }
+
+
+    // ANSI文字列として描画
+    TextOutA(memDC, x, y, str.c_str(), str.length());
+}
+
+void D_DrawScore_D(HDC memDC, int x, int y, int score_d) {
+    std::string str = "";
+    if (score_d == 2) {
+        std::string str = "perfect";
+    }
+    else if (score_d == 1) {
+        std::string str = "great";
+    }
+    else {
+        std::string str = "good";
+    }
+
+
+    // ANSI文字列として描画
+    TextOutA(memDC, x, y, str.c_str(), str.length());
+}
+
 
 #define MAX_LOADSTRING 100
 
@@ -573,13 +624,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         int centerY = 7 * height / 8;
 
         if (drawNoteA_gd) {
-			A_DrawScore_D(memDC, 5 * width / 18, 19 * height / 20, 0);
+			A_DrawScore_D(memDC, 5 * width / 9, 19 * height / 20, 0);
         }
         if (drawNoteA_gr) {
-			A_DrawScore_D(memDC, 5 * width / 18, 19 * height / 20, 1);
+			A_DrawScore_D(memDC, 5 * width / 9, 19 * height / 20, 1);
         }
         if (drawNoteA_pf) {
-            A_DrawScore_D(memDC, 5 * width / 18, 19 * height / 20, 2);
+            A_DrawScore_D(memDC, 5 * width / 9, 19 * height / 20, 2);
         }
 
 
