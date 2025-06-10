@@ -316,9 +316,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             note.y += note.speed;
         }
 
-        // 範囲外に出たノーツを削除（画面下）
+        // 範囲外に出たノーツを抽出
+        auto it = std::remove_if(notes.begin(), notes.end(), [height](const Note& n) {
+            return n.y > height;
+            });
+
+        // 削除対象のノーツの数を取得
+        int penalty = std::distance(it, notes.end());
+
+        // 必要な場合のみスコアを減算
+        if (penalty > 0) {
+            score -= Notescore;  // スコアが負にならないように調整
+        }
+
+        // 削除を実行
+        notes.erase(it, notes.end());
+
+        // 範囲外に出たノーツを削除
         notes.erase(std::remove_if(notes.begin(), notes.end(), [height](const Note& n) {
-            return n.y > height;  // 画面下に出たら削除
+            return n.y > height;
             }), notes.end());
 
 
