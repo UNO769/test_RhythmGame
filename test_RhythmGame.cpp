@@ -26,6 +26,14 @@ int Notescore = 0;
 
 int score_d = 0;
 
+
+//スコア表示の文字用変数
+int judge_A_time = 0;
+int judge_A = 0;
+
+
+
+
 void DrawScore(HDC memDC, int x, int y, int score) {
     std::string str = "Score: " + std::to_string(score) + "%";
 
@@ -311,6 +319,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     case WM_TIMER:
     {
+        //判定表示時間の減算
+		if (judge_A_time > 0) {
+			judge_A_time--;
+		}
+
+
         // ノーツの移動
         for (auto& note : notes) {
             note.y += note.speed;
@@ -381,17 +395,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
             for (auto it = notes.begin(); it != notes.end(); ) {
                 if (it->key == 1 && it->y >= judgeTop && it->y <= judgeBottom) {
-                    drawNoteA_pf = true;
+					judge_A_time = 60; // 判定表示時間を設定
+					judge_A = 2; // 判定を設定
                     
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
                 else if (it->key == 1 && it->y >= judgeTop_b && it->y <= judgeBottom_b) {
-                    drawNoteA_gr = true;
+                    judge_A_time = 60; // 判定表示時間を設定
+                    judge_A = 1; // 判定を設定
                     score -= Notescore * 0.25;
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
                 else if (it->key == 1 && it->y >= judgeTop_c && it->y <= judgeBottom_c) {
-                    drawNoteA_gd = true;
+                    judge_A_time = 60; // 判定表示時間を設定
+                    judge_A = 0; // 判定を設定
                     score -= Notescore * 0.5;
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
@@ -639,14 +656,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         int radius = 50;
         int centerY = 7 * height / 8;
 
-        if (drawNoteA_gd) {
-			A_DrawScore_D(memDC, 5 * width / 9, 19 * height / 20, 0);
-        }
-        if (drawNoteA_gr) {
-			A_DrawScore_D(memDC, 5 * width / 9, 19 * height / 20, 1);
-        }
-        if (drawNoteA_pf) {
-            A_DrawScore_D(memDC, 5 * width / 9, 19 * height / 20, 2);
+        if (judge_A_time > 0) {
+			A_DrawScore_D(memDC, width / 2,height / 3, judge_A);
         }
 
 
