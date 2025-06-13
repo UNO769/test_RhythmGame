@@ -44,13 +44,13 @@ void DrawScore(HDC memDC, int x, int y, int score) {
 void A_DrawScore_D(HDC memDC, int x, int y, int score_d) {
     std::string str = "";
 	if (score_d == 2) {
-        std::string str = "perfect";
+        str = "perfect";
 	}
     else if (score_d == 1) {
-        std::string str = "great";
+        str = "great";
     }
     else {
-		std::string str = "good";
+		str = "good";
     }
 
 
