@@ -657,7 +657,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         int centerY = 7 * height / 8;
 
         if (judge_A_time > 0) {
-			A_DrawScore_D(memDC, width / 2,height / 3, judge_A);
+			A_DrawScore_D(memDC, 3 * width / 9 , 7 * height / 8, judge_A);
         }
 
 
