@@ -30,6 +30,12 @@ int score_d = 0;
 //スコア表示の文字用変数
 int judge_A_time = 0;
 int judge_A = 0;
+int judge_B_time = 0;
+int judge_B = 0;
+int judge_C_time = 0;
+int judge_C = 0;
+int judge_D_time = 0;
+int judge_D = 0;
 
 
 
@@ -61,13 +67,13 @@ void A_DrawScore_D(HDC memDC, int x, int y, int score_d) {
 void B_DrawScore_D(HDC memDC, int x, int y, int score_d) {
     std::string str = "";
     if (score_d == 2) {
-        std::string str = "perfect";
+        str = "perfect";
     }
     else if (score_d == 1) {
-        std::string str = "great";
+        str = "great";
     }
     else {
-        std::string str = "good";
+        str = "good";
     }
 
 
@@ -78,13 +84,13 @@ void B_DrawScore_D(HDC memDC, int x, int y, int score_d) {
 void C_DrawScore_D(HDC memDC, int x, int y, int score_d) {
     std::string str = "";
     if (score_d == 2) {
-        std::string str = "perfect";
+        str = "perfect";
     }
     else if (score_d == 1) {
-        std::string str = "great";
+        str = "great";
     }
     else {
-        std::string str = "good";
+        str = "good";
     }
 
 
@@ -95,13 +101,13 @@ void C_DrawScore_D(HDC memDC, int x, int y, int score_d) {
 void D_DrawScore_D(HDC memDC, int x, int y, int score_d) {
     std::string str = "";
     if (score_d == 2) {
-        std::string str = "perfect";
+        str = "perfect";
     }
     else if (score_d == 1) {
-        std::string str = "great";
+        str = "great";
     }
     else {
-        std::string str = "good";
+        str = "good";
     }
 
 
@@ -323,6 +329,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if (judge_A_time > 0) {
 			judge_A_time--;
 		}
+        if (judge_B_time > 0) {
+            judge_B_time--;
+        }
+        if (judge_C_time > 0) {
+            judge_C_time--;
+        }
+        if (judge_D_time > 0) {
+            judge_D_time--;
+        }
 
 
         // ノーツの移動
@@ -421,17 +436,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             drawBoxB = true; // Fキーを押したらB描画フラグをON
             for (auto it = notes.begin(); it != notes.end(); ) {
                 if (it->key == 2 && it->y >= judgeTop && it->y <= judgeBottom) {
-                    drawNoteB_pf = true;
+                    judge_B_time = 60; // 判定表示時間を設定
+                    judge_B = 2; // 判定を設定
                     
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
                 else if (it->key == 2 && it->y >= judgeTop_b && it->y <= judgeBottom_b) {
-                    drawNoteB_gr = true;
+                    judge_B_time = 60; // 判定表示時間を設定
+                    judge_B = 1; // 判定を設定
                     score -= Notescore * 0.25;
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
                 else if (it->key == 2 && it->y >= judgeTop_c && it->y <= judgeBottom_c) {
-                    drawNoteB_gd = true;
+                    judge_B_time = 60; // 判定表示時間を設定
+                    judge_B = 0; // 判定を設定
                     score -= Notescore * 0.5;
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
@@ -444,17 +462,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             drawBoxC = true; // Jキーを押したらC描画フラグをON
             for (auto it = notes.begin(); it != notes.end(); ) {
                 if (it->key == 3 && it->y >= judgeTop && it->y <= judgeBottom) {
-                    drawNoteC_pf = true;
+                    judge_C_time = 60; // 判定表示時間を設定
+                    judge_C = 2; // 判定を設定
                     
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
                 else if (it->key == 3 && it->y >= judgeTop_b && it->y <= judgeBottom_b) {
-                    drawNoteC_gr = true;
+                    judge_C_time = 60; // 判定表示時間を設定
+                    judge_C = 1; // 判定を設定
                     score -= Notescore * 0.25;
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
                 else if (it->key == 3 && it->y >= judgeTop_c && it->y <= judgeBottom_c) {
-                    drawNoteC_gd = true;
+                    judge_C_time = 60; // 判定表示時間を設定
+                    judge_C = 0; // 判定を設定
                     score -= Notescore * 0.5;
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
@@ -467,17 +488,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             drawBoxD = true; // Kキーを押したらD描画フラグをON
             for (auto it = notes.begin(); it != notes.end(); ) {
                 if (it->key == 4 && it->y >= judgeTop && it->y <= judgeBottom) {
-                    drawNoteD_pf = true;
+                    judge_D_time = 60; // 判定表示時間を設定
+                    judge_D = 2; // 判定を設定
                    
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
                 else if (it->key == 4 && it->y >= judgeTop_b && it->y <= judgeBottom_b) {
-                    drawNoteD_gr = true;
+                    judge_D_time = 60; // 判定表示時間を設定
+                    judge_D = 1; // 判定を設定
                     score -= Notescore * 0.25;
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
                 else if (it->key == 4 && it->y >= judgeTop_c && it->y <= judgeBottom_c) {
-                    drawNoteD_gd = true;
+                    judge_D_time = 60; // 判定表示時間を設定
+                    judge_D = 0; // 判定を設定
                     score -= Notescore * 0.5;
                     it = notes.erase(it);  // 条件を満たしたら削除
                 }
@@ -660,71 +684,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			A_DrawScore_D(memDC, 3 * width / 9 , 7 * height / 8, judge_A);
         }
 
-
-        if (drawNoteB_gd) {
-            HBRUSH B_d_Brush = CreateSolidBrush(RGB(0, 0, 255));
-            HBRUSH oldBrush = (HBRUSH)SelectObject(memDC, B_d_Brush);
-        }
-        if (drawNoteB_gr) {
-            HBRUSH B_d_Brush = CreateSolidBrush(RGB(0, 255, 0));
-            HBRUSH oldBrush = (HBRUSH)SelectObject(memDC, B_d_Brush);
-        }
-        if (drawNoteB_pf) {
-            HBRUSH B_d_Brush = CreateSolidBrush(RGB(255, 0, 0));
-            HBRUSH oldBrush = (HBRUSH)SelectObject(memDC, B_d_Brush);
+        if (judge_B_time > 0) {
+            B_DrawScore_D(memDC, 4 * width / 9, 7 * height / 8, judge_B);
         }
 
-
-        if (drawNoteB_pf || drawNoteB_gd || drawNoteB_gr) {
-            drawNoteB_pf = false;
-            drawNoteB_gr = false;
-            drawNoteB_gd = false;
-            int centerX = 4 * width / 9;
-            Ellipse(memDC, centerX - radius, centerY - radius, centerX + radius, centerY + radius);
+        if (judge_C_time > 0) {
+            C_DrawScore_D(memDC, 5 * width / 9, 7 * height / 8, judge_C);
         }
 
-        if (drawNoteC_gd) {
-            HBRUSH C_d_Brush = CreateSolidBrush(RGB(0, 0, 255));
-            HBRUSH oldBrush = (HBRUSH)SelectObject(memDC, C_d_Brush);
-        }
-        if (drawNoteC_gr) {
-            HBRUSH C_d_Brush = CreateSolidBrush(RGB(0, 255, 0));
-            HBRUSH oldBrush = (HBRUSH)SelectObject(memDC, C_d_Brush);
-        }
-        if (drawNoteC_pf) {
-            HBRUSH C_d_Brush = CreateSolidBrush(RGB(255, 0, 0));
-            HBRUSH oldBrush = (HBRUSH)SelectObject(memDC, C_d_Brush);
-        }
-
-
-        if (drawNoteC_pf || drawNoteC_gd || drawNoteC_gr) {
-            drawNoteC_pf = false;
-            drawNoteC_gr = false;
-            drawNoteC_gd = false;
-            int centerX = 5 * width / 9;
-            Ellipse(memDC, centerX - radius, centerY - radius, centerX + radius, centerY + radius);
-        }
-
-        if (drawNoteD_gd) {
-            HBRUSH D_d_Brush = CreateSolidBrush(RGB(0, 0, 255));
-            HBRUSH oldBrush = (HBRUSH)SelectObject(memDC, D_d_Brush);
-        }
-        if (drawNoteD_gr) {
-            HBRUSH D_d_Brush = CreateSolidBrush(RGB(0, 255, 0));
-            HBRUSH oldBrush = (HBRUSH)SelectObject(memDC, D_d_Brush);
-        }
-        if (drawNoteD_pf) {
-            HBRUSH D_d_Brush = CreateSolidBrush(RGB(255, 0, 0));
-            HBRUSH oldBrush = (HBRUSH)SelectObject(memDC, D_d_Brush);
-        }
-
-
-        if (drawNoteD_pf || drawNoteD_gd || drawNoteD_gr) {
-            drawNoteD_pf = false;
-            drawNoteD_gr = false;
-            drawNoteD_gd = false;
-            int centerX = 6 * width / 9;
-            Ellipse(memDC, centerX - radius, centerY - radius, centerX + radius, centerY + radius);
+        if (judge_D_time > 0) {
+            D_DrawScore_D(memDC, 6 * width / 9, 7 * height / 8, judge_D);
         }
 
 
